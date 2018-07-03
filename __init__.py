@@ -16,6 +16,8 @@ class OffsetView(BinaryView):
 
     def init(self):
         def analysis_complete(evt):
+            # We need to do this in a callback since the parent view's
+            # metadata isn't always accessible during init().
             addr = self.parent_view.query_metadata(ADDR_METADATA_KEY)
 
             length = len(self.parent_view)
