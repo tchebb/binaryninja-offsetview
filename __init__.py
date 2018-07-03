@@ -48,7 +48,8 @@ def load_at_offset(data):
     raw_data = data.file.raw
 
     addr = interaction.get_address_input("Base Address", "Base Address")
-    raw_data.store_metadata(ADDR_METADATA_KEY, int(addr))
+    if addr is not None:
+        raw_data.store_metadata(ADDR_METADATA_KEY, int(addr))
 
 PluginCommand.register(
     "Load at",
