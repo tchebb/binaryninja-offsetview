@@ -24,7 +24,9 @@ class OffsetView(BinaryView):
             self.add_auto_segment(
                 addr, length,
                 0, length,
-                SegmentFlag.SegmentReadable
+                (SegmentFlag.SegmentReadable |
+                 SegmentFlag.SegmentWritable |
+                 SegmentFlag.SegmentExecutable)
             )
 
         self.parent_view.add_analysis_completion_event(analysis_complete)
