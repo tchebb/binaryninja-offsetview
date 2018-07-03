@@ -24,7 +24,6 @@ class OffsetView(BinaryView):
                 0, length,
                 SegmentFlag.SegmentReadable
             )
-            pass
 
         self.parent_view.add_analysis_completion_event(analysis_complete)
         self.parent_view.update_analysis()
