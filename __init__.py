@@ -5,7 +5,14 @@ from binaryninja.binaryview import BinaryView, AnalysisCompletionEvent
 from binaryninja.enums import SegmentFlag
 
 ADDR_METADATA_KEY = 'loadataddr'
+FLAGS_METADATA_KEY = 'loadatflags'
 
+FLAG_OPTIONS = ["R", "RX", "RW", "RWX"]
+FLAG_MAP = {
+    'R': SegmentFlag.SegmentReadable,
+    'W': SegmentFlag.SegmentWritable,
+    'X': SegmentFlag.SegmentExecutable,
+}
 
 class OffsetView(BinaryView):
     name = "OffsetView"
@@ -19,14 +26,21 @@ class OffsetView(BinaryView):
             # We need to do this in a callback since the parent view's
             # metadata isn't always accessible during init().
             addr = self.parent_view.query_metadata(ADDR_METADATA_KEY)
+            try:
+                flags = self.parent_view.query_metadata(FLAGS_METADATA_KEY)
+            except KeyError:
+                # Database from old version of plugin
+                flags = (
+                    SegmentFlag.SegmentReadable |
+                    SegmentFlag.SegmentWritable |
+                    SegmentFlag.SegmentExecutable
+                )
 
             length = len(self.parent_view)
             self.add_auto_segment(
                 addr, length,
                 0, length,
-                (SegmentFlag.SegmentReadable |
-                 SegmentFlag.SegmentWritable |
-                 SegmentFlag.SegmentExecutable)
+                flags
             )
 
         self.parent_view.add_analysis_completion_event(analysis_complete)
@@ -49,9 +63,26 @@ OffsetView.register()
 def load_at_offset(data):
     raw_data = data.file.raw
 
-    addr = interaction.get_address_input("Base Address", "Base Address")
-    if addr is not None:
-        raw_data.store_metadata(ADDR_METADATA_KEY, int(addr))
+    addr_f = interaction.AddressField("Base Address")
+    flags_str_f = interaction.ChoiceField(
+        "Flags",
+        FLAG_OPTIONS,
+    )
+
+    res = interaction.get_form_input(
+        [addr_f, flags_str_f],
+        "Load Parameters"
+    )
+
+    if not res:
+        return
+
+    flags = 0
+    for flag in FLAG_OPTIONS[flags_str_f.result]:
+        flags = flags | FLAG_MAP[flag]
+
+    raw_data.store_metadata(ADDR_METADATA_KEY, int(addr_f.result))
+    raw_data.store_metadata(FLAGS_METADATA_KEY, flags)
 
 PluginCommand.register(
     "Load at",
