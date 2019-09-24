@@ -1,15 +1,21 @@
 {
-	"plugin": {
-		"name": "OffsetView",
-		"type": ["binaryview", "ui"],
-		"api": "python2",
-		"description": "Binary Ninja `BinaryView` to display a binary file with a nonzero base address.",
-		"longdescription": "Open a file of machine code for analysis in a BinaryView that has a given base address. This allows pieces of code such as bootloaders and ROMs to be analyzed correctly without writing a custom view.",
-		"license": {
-			"name": "GPLv2",
-			"text": "Copyright (C) 2018 Thomas Hebb\n\nThis program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA."
-		},
-		"version": "0.1",
-		"author": "Thomas Hebb"
-	}
+	"pluginmetadataversion": 2,
+	"name": "OffsetView",
+	"type": ["binaryview", "ui"],
+	"api": ["python2", "python3"],
+	"description": "Binary Ninja `BinaryView` to display a binary file with a nonzero base address.",
+	"longdescription": "Open a file of machine code for analysis in a BinaryView that has a given base address. This allows pieces of code such as bootloaders and ROMs to be analyzed correctly without writing a custom view.",
+	"license": {
+		"name": "GPLv2",
+		"text": "Copyright (C) 2018 Thomas Hebb\n\nThis program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA."
+	},
+	"platforms": ["Windows", "Linux", "Darwin"],
+	"installinstructions": {
+		"Windows": "Put it in the plugins directory",
+		"Linux": "Put it in the plugins directory",
+		"Darwin": "Put it in the plugins directory"
+	},
+	"version": "0.1",
+	"minimumbinaryninjaversion": 0,
+	"author": "Thomas Hebb"
 }
