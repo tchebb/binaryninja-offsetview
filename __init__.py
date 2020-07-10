@@ -22,9 +22,7 @@ class OffsetView(BinaryView):
         BinaryView.__init__(self, file_metadata=data.file, parent_view=data)
 
     def init(self):
-        def analysis_complete(evt):
-            # We need to do this in a callback since the parent view's
-            # metadata isn't always accessible during init().
+        def do_reloc(_evt):
             addr = self.parent_view.query_metadata(ADDR_METADATA_KEY)
             try:
                 flags = self.parent_view.query_metadata(FLAGS_METADATA_KEY)
@@ -43,8 +41,26 @@ class OffsetView(BinaryView):
                 flags
             )
 
-        self.parent_view.add_analysis_completion_event(analysis_complete)
-        self.parent_view.update_analysis()
+        # In Binary Ninja 1.1.1338-dev, the segment creation needs to happen in
+        # an AnalysisCompletionEvent callback because otherwise querying the
+        # address from metadata fails when a relocated bndb is loaded. On
+        # version 2.1.2263, however, it's the opposite: the callback now runs
+        # after functions have been added and so we get a "not backed by file"
+        # error when the core tries to add function. The metadata now seems to
+        # reliably load directly from init(), though. So we have this ugly
+        # check to see which behavior we need.
+        try:
+            self.parent_view.query_metadata(ADDR_METADATA_KEY)
+        except KeyError:
+            print(
+                "Could not load OffsetView address during init(); "
+                "this probably means you have an old version of Binary Ninja. "
+                "Deferring load to after analysis complete."
+            )
+            self.parent_view.add_analysis_completion_event(do_reloc)
+            self.parent_view.update_analysis()
+        else:
+            do_reloc(None)
 
         return True
 
