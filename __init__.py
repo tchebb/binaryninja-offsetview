@@ -1,5 +1,3 @@
-import time
-
 from binaryninja import PluginCommand, interaction
 from binaryninja.binaryview import BinaryView, AnalysisCompletionEvent
 from binaryninja.enums import SegmentFlag
